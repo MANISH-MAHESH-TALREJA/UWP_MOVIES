@@ -1,0 +1,104 @@
+﻿<Page
+    x:Class="NEW_MOVIES.Views.SettingsPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Style="{StaticResource PageStyle}"
+    DataContext="{Binding SettingsViewModel, Source={StaticResource Locator}}"
+    xmlns:helper="using:NEW_MOVIES.Helpers"
+    xmlns:xaml="using:Windows.UI.Xaml"
+    mc:Ignorable="d">
+    <Page.Resources>
+        <helper:EnumToBooleanConverter x:Key="EnumToBooleanConverter" EnumType="ElementTheme" />
+    </Page.Resources>
+
+    <Grid Margin="{StaticResource MediumLeftRightMargin}">
+        <StackPanel
+            x:Name="ContentArea">
+            <TextBlock
+                x:Uid="Settings_Personalization"
+                Margin="0, 10"
+                Style="{StaticResource SubtitleTextBlockStyle}" />
+            <StackPanel Margin="10, 10">
+                <TextBlock
+                    x:Uid="Settings_Theme"
+                    Style="{StaticResource BodyTextStyle}" />
+
+                <StackPanel Margin="{StaticResource EightTopMargin}">
+                    <RadioButton
+                        x:Uid="Settings_Theme_Light"
+                        GroupName="AppTheme"
+                        IsChecked="{x:Bind ViewModel.ElementTheme, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter=Light, Mode=OneWay}"
+                        Command="{x:Bind ViewModel.SwitchThemeCommand}">
+                        <RadioButton.CommandParameter>
+                            <xaml:ElementTheme>Light</xaml:ElementTheme>
+                        </RadioButton.CommandParameter>
+                    </RadioButton>
+                    <RadioButton
+                        x:Uid="Settings_Theme_Dark"
+                        GroupName="AppTheme"
+                        IsChecked="{x:Bind ViewModel.ElementTheme, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter=Dark, Mode=OneWay}"
+                        Command="{x:Bind ViewModel.SwitchThemeCommand}">
+                        <RadioButton.CommandParameter>
+                            <xaml:ElementTheme>Dark</xaml:ElementTheme>
+                        </RadioButton.CommandParameter>
+                    </RadioButton>
+                    <RadioButton
+                        x:Uid="Settings_Theme_Default"
+                        GroupName="AppTheme"
+                        IsChecked="{x:Bind ViewModel.ElementTheme, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter=Default, Mode=OneWay}"
+                        Command="{x:Bind ViewModel.SwitchThemeCommand}">
+                        <RadioButton.CommandParameter>
+                            <xaml:ElementTheme>Default</xaml:ElementTheme>
+                        </RadioButton.CommandParameter>
+                    </RadioButton>
+                </StackPanel>
+            </StackPanel>
+
+            <StackPanel Margin="10, 10">
+                <TextBlock
+                    x:Uid="SettingsPage_LanguageText"
+                    Style="{StaticResource BodyTextStyle}" />
+                <StackPanel Orientation="Horizontal">
+                    <ComboBox x:Name="LangSelect" Width="120"  Margin="10, 10" SelectionChanged="ComboBox_SelectionChanged">
+                        <ComboBoxItem x:Name="lang_zh_cn" Content="简体中文"/>
+                        <ComboBoxItem x:Name="lang_en_us"  Content="English"/>
+                    </ComboBox>
+                    <TextBlock Margin="0,10,0,0" Height="32" x:Uid="SettingsPage_LanguageRestartText" VerticalAlignment="Stretch"/>
+                </StackPanel>
+            </StackPanel>
+
+            <StackPanel Margin="10, 10">
+                <TextBlock
+                    x:Uid="SettingsPage_NoticeText"
+                    Style="{StaticResource BodyTextStyle}" />
+                <ToggleSwitch x:Name="NoticeSwitch" Toggled="NoticeSwitch_Toggled" IsOn="{x:Bind ViewModel.NoticeSwitchValue}"/>
+            </StackPanel>
+
+            <StackPanel Margin="10, 10">
+                <TextBlock
+                    x:Uid="SettingsPage_GuessLikeText"
+                    Style="{StaticResource BodyTextStyle}" />
+                <ToggleSwitch x:Name="GuessLikeSwitch" Toggled="GuessLikeSwitch_Toggled" IsOn="{x:Bind ViewModel.GuessLikeSwitchValue}"/>
+            </StackPanel>
+
+            <TextBlock
+                x:Uid="Settings_About"
+                Style="{StaticResource SubtitleTextBlockStyle}" />
+
+            <StackPanel Margin="{StaticResource EightTopMargin}">
+                <TextBlock
+                    Text="{x:Bind ViewModel.VersionDescription, Mode=OneWay}" />
+                <TextBlock
+                    x:Uid="Settings_AboutDescription"
+                    TextWrapping="Wrap"
+                    Margin="{StaticResource EightTopMargin}" />
+
+                <HyperlinkButton
+                    x:Uid="Settings_PrivacyTermsLink"
+                    Margin="{StaticResource EightTopMargin}" />
+            </StackPanel>
+        </StackPanel>
+    </Grid>    
+</Page>

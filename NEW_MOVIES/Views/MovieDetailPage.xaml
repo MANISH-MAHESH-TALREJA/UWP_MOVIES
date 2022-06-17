@@ -1,0 +1,555 @@
+﻿<Page
+    x:Class="NEW_MOVIES.Views.MovieDetailPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:model="using:NEW_MOVIES.Models"
+    xmlns:ic="using:Microsoft.Xaml.Interactions.Core"
+    xmlns:i="using:Microsoft.Xaml.Interactivity"
+    Style="{StaticResource PageStyle}"
+    DataContext="{Binding MovieDetailViewModel, Source={StaticResource Locator}}"
+    mc:Ignorable="d">
+    <RelativePanel x:Name="ContentArea">
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup>
+                <VisualState x:Name="Wide">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="650" />
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="TextTitle.Margin" 
+                                Value="10, 10"/>
+                        <Setter Target="MovieImage.Width"
+                                Value="200"/>
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="Small">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="0" />
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="TextTitle.Margin"
+                                Value="55, 10"/>
+                        <Setter Target="MovieImage.Width"
+                                Value="0"/>
+                    </VisualState.Setters>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
+
+        <ScrollViewer
+            x:Name="ScrollPage"
+            RelativePanel.AlignLeftWithPanel="True"
+            RelativePanel.AlignRightWithPanel="True"
+            VerticalScrollBarVisibility="Auto">
+            <Grid Background="Transparent">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                </Grid.RowDefinitions>
+                <RelativePanel
+                    x:Name="TopPanel"
+                    Grid.Row="0"
+                    MinHeight="512">
+                    <RelativePanel.Resources>
+                        <Storyboard x:Name="EnterStoryboard">
+                            <FadeOutThemeAnimation Storyboard.TargetName="BGRectangle" />
+                        </Storyboard>
+                        <Storyboard x:Name="ExitStoryboard">
+                            <FadeInThemeAnimation Storyboard.TargetName="BGRectangle" />
+                        </Storyboard>
+                    </RelativePanel.Resources>
+                    <Rectangle
+                        x:Name="BGRectangle"
+                        RelativePanel.AlignBottomWithPanel="True"
+                        PointerEntered="BGRectangle_PointerEntered"
+                        PointerExited="BGRectangle_PointerExited"
+                        MinHeight="200"
+                        RelativePanel.AlignRightWithPanel="True"
+                        RelativePanel.AlignLeftWithPanel="True"
+                        HorizontalAlignment="Stretch">
+                        <Rectangle.Fill>
+                            <AcrylicBrush FallbackColor="#ffe6E6E6" TintColor="#99dddddd" TintOpacity="0.5"/>
+                        </Rectangle.Fill>
+                    </Rectangle>
+                    <RelativePanel
+                        x:Name="DataTopPanel"
+                        RelativePanel.AlignBottomWithPanel="True"
+                        RelativePanel.AlignRightWithPanel="True"
+                        RelativePanel.AlignLeftWithPanel="True"
+                        Height="280"
+                        Visibility="{x:Bind ViewModel.GetVisibility, Mode=OneWay}"
+                        Background="Transparent">
+                        <Image
+                            x:Name="MovieImage"
+                            Margin="18"
+                            Width="200"
+                            Stretch="Uniform"
+                            RelativePanel.AlignTopWithPanel="True"/>
+                        <TextBlock
+                            x:Name="TextTitleCn"
+                            Text="{x:Bind ViewModel.MovieDetail.TitleCn, Mode=OneWay}"
+                            Margin="0, 90, 0, 0"
+                            FontSize="27"
+                            RelativePanel.RightOf="MovieImage"
+                            RelativePanel.AlignTopWithPanel="True"/>
+                        <TextBlock
+                            x:Name="TextTitleEn"
+                            Text="{x:Bind ViewModel.MovieDetail.TitleEn, Mode=OneWay}"
+                            FontSize="20"
+                            RelativePanel.RightOf="MovieImage"
+                            RelativePanel.Below="TextTitleCn"/>
+                        <RatingControl
+                            x:Name="Rating"
+                            RelativePanel.Below="TextTitleEn"
+                            RelativePanel.RightOf="MovieImage"
+                            Visibility="{x:Bind ViewModel.MovieDetail.HasRating, Mode=OneWay}"
+                            PlaceholderValue="{x:Bind ViewModel.MovieDetail.RatingFive, Mode=OneWay}"
+                            Margin="0, 10, 0, 0"
+                            IsReadOnly="True"/>
+                        <TextBlock
+                            x:Name="TextRating"
+                            RelativePanel.Below="TextTitleEn"
+                            RelativePanel.RightOf="Rating"
+                            Margin="20, 13, 0, 0"
+                            Visibility="{x:Bind ViewModel.MovieDetail.HasRating, Mode=OneWay}"
+                            Text="{x:Bind ViewModel.MovieDetail.Rating, Mode=OneWay}"/>
+                        <TextBlock
+                            x:Name="TextType"
+                            Margin="-4, 5, 0, 12"
+                            FontSize="17"
+                            RelativePanel.Below="Rating"
+                            RelativePanel.RightOf="MovieImage"
+                            Text="{x:Bind  ViewModel.MovieDetail.MovieType, Mode=OneWay}"/>
+                        <!-- MovieDetailPage_TextDateHelp.Text="上映日期：" -->
+                        <TextBlock
+                            x:Uid="MovieDetailPage_TextDateHelp"
+                            x:Name="TextDateHelp"
+                            Margin="0,0,5,0"
+                            RelativePanel.Below="TextType"
+                            RelativePanel.RightOf="MovieImage"/>
+                        <TextBlock
+                            x:Name="TextDate"
+                            Text="{x:Bind ViewModel.MovieDetail.Date, Mode=OneWay}"
+                            RelativePanel.Below="TextType"
+                            RelativePanel.RightOf="TextDateHelp"/>
+                    </RelativePanel>
+                </RelativePanel>
+                <Grid Grid.Row="1" Margin="20">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="auto"/>
+                    </Grid.ColumnDefinitions>
+                    <!-- MovieDetailPage_Detail.Text="剧情简介" -->
+                    <TextBlock x:Uid="MovieDetailPage_Detail"
+                               Grid.Row="0"
+                               Grid.Column="0"
+                               FontSize="18"
+                               Margin="0, 10, 0, 0"
+                               FontWeight="Bold"/>
+                    <Grid Padding="20"
+                          Grid.Row="1"
+                          Grid.Column="0"
+                          HorizontalAlignment="Left"
+                          VerticalAlignment="Top">
+                        <TextBlock Text="{x:Bind ViewModel.MovieDetail.Story, Mode=OneWay}"
+                               TextWrapping="WrapWholeWords"/>
+                    </Grid>
+                    <!-- MovieDetailPage_OtherInfoHead.Text="其他信息" -->
+                    <TextBlock
+                        x:Uid="MovieDetailPage_OtherInfoHead"
+                        x:Name="OtherInfoHead"
+                        Grid.Row="0"
+                        Grid.Column="1"
+                        FontSize="18"
+                        Margin="0, 10, 0, 0"
+                        FontWeight="Bold"
+                        Visibility="{x:Bind ViewModel.movieDetail.HasRating, Mode=OneWay}"/>
+                    <RelativePanel 
+                        x:Name="OtherInfo"
+                        Padding="20"
+                        Grid.Row="1"
+                        Grid.Column="1"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Top"
+                        Visibility="{x:Bind ViewModel.movieDetail.HasRating, Mode=OneWay}">
+                        <!-- MovieDetailPage_TextTime.Text="时长："  -->
+                        <TextBlock x:Uid="MovieDetailPage_TextTime"
+                                   x:Name="TextTime"
+                                   Margin="0,0,5,0"
+                                   RelativePanel.AlignTopWithPanel="True"
+                                   RelativePanel.AlignLeftWithPanel="True"/>
+                        <TextBlock Text="{x:Bind ViewModel.MovieDetail.MovieTime, Mode=OneWay}"
+                                   RelativePanel.AlignTopWithPanel="True"
+                                   RelativePanel.RightOf="TextTime"/>
+                        <!-- MovieDetailPage_TextLocation.Text="地区：" -->
+                        <TextBlock x:Uid="MovieDetailPage_TextLocation"
+                                   x:Name="TextLocation"
+                                   Margin="0,0,5,0"
+                                   RelativePanel.Below="TextTime"
+                                   RelativePanel.AlignLeftWithPanel="True"/>
+                        <TextBlock Text="{x:Bind ViewModel.MovieDetail.LocationName, Mode=OneWay}"
+                                   RelativePanel.Below="TextTime"
+                                   RelativePanel.RightOf="TextLocation"/>
+                    </RelativePanel>
+                </Grid>
+                <!-- MovieDetailPage_TextDirector.Text="导演" -->
+                <TextBlock x:Uid="MovieDetailPage_TextDirector"
+                           Grid.Row="2"
+                           FontSize="18"
+                           Margin="20, 10, 0, 0"
+                           FontWeight="Bold"/>
+                <GridView ItemsSource="{x:Bind ViewModel.MovieDetail.DirectorList, Mode=OneWay}"
+                          Grid.Row="3"
+                          CanDragItems="False"
+                          Margin="10"
+                          Padding="20">
+                    <GridView.ItemTemplate>
+                        <DataTemplate x:DataType="model:PeopleItem">
+                            <RelativePanel Margin="10">
+                                <PersonPicture x:Name="PictureHead" ProfilePicture="{x:Bind ImageUri, Mode=OneWay}"
+                                               RelativePanel.AlignTopWithPanel="True"
+                                               RelativePanel.AlignLeftWithPanel="True"
+                                               Height="60"/>
+                                <TextBlock x:Name="DirName"
+                                           Text="{x:Bind NameCn, Mode=OneWay}"
+                                           RelativePanel.RightOf="PictureHead"
+                                           Margin="20, 10, 0, 0"/>
+                                <TextBlock x:Name="DirNameEn"
+                                           Text="{x:Bind NameEn, Mode=OneWay}"
+                                           RelativePanel.Below="DirName"
+                                           RelativePanel.RightOf="PictureHead"
+                                           Margin="20, 0"/>
+                            </RelativePanel>
+                        </DataTemplate>
+                    </GridView.ItemTemplate>
+                </GridView>
+                <!-- MovieDetailPage_Cast.Text="演员" -->
+                <TextBlock x:Uid="MovieDetailPage_Cast"
+                           Grid.Row="4"
+                           FontSize="18"
+                           Margin="20, 10, 0, 0"
+                           FontWeight="Bold"/>
+                <GridView ItemsSource="{x:Bind ViewModel.MovieDetail.ActorList, Mode=OneWay}"
+                          Grid.Row="5"
+                          CanDragItems="False"
+                          Margin="10"
+                          Padding="20">
+                    <GridView.ItemTemplate>
+                        <DataTemplate x:DataType="model:ActorItem">
+                            <RelativePanel Margin="10">
+                                <PersonPicture x:Name="PictureHeadActor" ProfilePicture="{x:Bind ImageUri, Mode=OneWay}"
+                                               RelativePanel.AlignTopWithPanel="True"
+                                               RelativePanel.AlignLeftWithPanel="True"
+                                               Height="60"/>
+                                <Grid x:Name="ActorGrid"
+                                      RelativePanel.RightOf="PictureHeadActor"
+                                      MinWidth="200">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="auto"/>
+                                        <RowDefinition Height="auto"/>
+                                    </Grid.RowDefinitions>
+                                    <TextBlock
+                                        Grid.Row="0"
+                                        Text="{x:Bind NameCn, Mode=OneWay}"
+                                        Margin="20, 10, 0, 0"/>
+                                    <TextBlock
+                                        Grid.Row="1"
+                                        Text="{x:Bind NameEn, Mode=OneWay}"
+                                        Margin="20, 0"/>
+                                </Grid>
+                                <!-- MovieDetailPage_ActorHelpText.Text="饰" -->
+                                <TextBlock x:Uid="MovieDetailPage_ActorHelpText"
+                                           x:Name="ActorHelpText"
+                                           Margin="0,20, 40, 0"
+                                           RelativePanel.RightOf="ActorGrid"/>
+                                <PersonPicture x:Name="PictureHeadRole"
+                                               ProfilePicture="{x:Bind RoleImageUri, Mode=OneWay}"
+                                               RelativePanel.RightOf="ActorHelpText"
+                                               Height="60"/>
+                                <TextBlock x:Name="RoleName"
+                                           Text="{x:Bind RoleName, Mode=OneWay}"
+                                           Width="150"
+                                           RelativePanel.RightOf="PictureHeadRole"
+                                           Margin="20, 10, 0, 0"/>
+                            </RelativePanel>
+                        </DataTemplate>
+                    </GridView.ItemTemplate>
+                </GridView>
+
+                <!-- MovieDetailPage_PhotosHeader.Text="剧照" -->
+                <TextBlock x:Uid="MovieDetailPage_PhotosHeader"
+                           Grid.Row="6"
+                           FontSize="18"
+                           Margin="20, 10, 0, 0"
+                           FontWeight="Bold"/>
+
+                <GridView
+                    Grid.Row="7"
+                    Margin="20"
+                    x:Name="gridView"
+                    ItemsSource="{x:Bind ViewModel.Source}"
+                    IsItemClickEnabled="True"
+                    Padding="{StaticResource MediumLeftRightMargin}"
+                    SelectionMode="None"
+                    ScrollViewer.VerticalScrollBarVisibility="Disabled"  
+                    ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                    ScrollViewer.HorizontalScrollMode="Enabled"                  
+                    ScrollViewer.VerticalScrollMode="Disabled">
+                    <i:Interaction.Behaviors>
+                        <ic:EventTriggerBehavior EventName="ItemClick">
+                            <ic:InvokeCommandAction Command="{x:Bind ViewModel.ItemSelectedCommand}" />
+                        </ic:EventTriggerBehavior>
+                    </i:Interaction.Behaviors>
+                    <GridView.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel Orientation="Horizontal"></StackPanel>
+                        </ItemsPanelTemplate>
+                    </GridView.ItemsPanel>
+                    <GridView.ItemTemplate>
+                        <DataTemplate x:DataType="model:PostItem">
+                            <Image
+                                x:Name="galleryImage"
+                                Style="{StaticResource ThumbnailImageStyle}"
+                                Source="{x:Bind ImageUri}"
+                                AutomationProperties.Name="{x:Bind Title}"
+                                ToolTipService.ToolTip="{x:Bind Title}"/>
+                        </DataTemplate>
+                    </GridView.ItemTemplate>
+                </GridView>
+
+                <!-- MovieDetailPage_PreVideosHeader.Text="预告片" -->
+                <TextBlock x:Uid="MovieDetailPage_PreVideosHeader"
+                           Grid.Row="8"
+                           FontSize="18"
+                           Margin="20, 10, 0, 0"
+                           FontWeight="Bold"/>
+
+                <GridView
+                    Grid.Row="9"
+                    Margin="20"
+                    x:Name="gridViewVideo"
+                    ItemsSource="{x:Bind ViewModel.MovieDetail.Videos}"
+                    IsItemClickEnabled="True"
+                    Padding="{StaticResource MediumLeftRightMargin}"
+                    SelectionMode="None"
+                    ScrollViewer.VerticalScrollBarVisibility="Disabled"  
+                    ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                    ScrollViewer.HorizontalScrollMode="Enabled"                  
+                    ScrollViewer.VerticalScrollMode="Disabled">
+                    <i:Interaction.Behaviors>
+                        <ic:EventTriggerBehavior EventName="ItemClick">
+                            <ic:InvokeCommandAction Command="{x:Bind ViewModel.VideoSelectedCommand}" />
+                        </ic:EventTriggerBehavior>
+                    </i:Interaction.Behaviors>
+                    <GridView.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel Orientation="Horizontal"></StackPanel>
+                        </ItemsPanelTemplate>
+                    </GridView.ItemsPanel>
+                    <GridView.ItemTemplate>
+                        <DataTemplate x:DataType="model:VideoItem">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="auto"/>
+                                    <RowDefinition Height="auto"/>
+                                </Grid.RowDefinitions>
+                                <Image
+                                    x:Name="galleryImage"
+                                    Grid.Row="0"
+                                    Height="120"
+                                    Margin="0, 10"
+                                    Style="{StaticResource ThumbnailImageStyle}"
+                                    Source="{x:Bind ImageUri}"
+                                    AutomationProperties.Name="{x:Bind Title}"
+                                    ToolTipService.ToolTip="{x:Bind Title}"/>
+                                <TextBlock
+                                    Margin="10"
+                                    x:Name="TextTitle"
+                                    Grid.Row="1"
+                                    FontSize="13"
+                                    Foreground="#ff555555"
+                                    Text="{x:Bind Title}"/>
+                            </Grid>
+                        </DataTemplate>
+                    </GridView.ItemTemplate>
+                </GridView>
+
+                <!-- MovieDetailPage_CommentsHeader.Text="影评" -->
+                <TextBlock x:Uid="MovieDetailPage_CommentsHeader"
+                           Grid.Row="10"
+                           FontSize="18"
+                           Margin="20, 10, 0, 0"
+                           FontWeight="Bold"
+                           Visibility="{x:Bind ViewModel.movieDetail.HasRating, Mode=OneWay}"/>
+                <ListView ItemsSource="{x:Bind ViewModel.MovieDetail.Comments, Mode=OneWay}"
+                          Visibility="{x:Bind ViewModel.movieDetail.HasRating, Mode=OneWay}"
+                          Grid.Row="11"
+                          CanDragItems="False"
+                          Margin="10"
+                          Padding="20">
+                    <ListView.ItemTemplate>
+                        <DataTemplate x:DataType="model:CommentItem">
+                            <Grid Margin="10"
+                                  ColumnSpacing="30">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <RelativePanel Grid.Column="0">
+                                    <PersonPicture x:Name="PictureHead"
+                                               ProfilePicture="{x:Bind HeadImgUri, Mode=OneWay}"
+                                               RelativePanel.AlignTopWithPanel="True"
+                                               RelativePanel.AlignLeftWithPanel="True"
+                                               Height="60"
+                                               Margin="27, 0"
+                                               HorizontalAlignment="Center"/>
+                                    <RatingControl x:Name="Rating"
+                                                RelativePanel.Below="PictureHead"
+                                                PlaceholderValue="{x:Bind RatingFive, Mode=OneWay}"
+                                                Margin="0,6,0,0"
+                                                IsReadOnly="True"/>
+                                </RelativePanel>
+                                <RelativePanel Grid.Column="1">
+                                    <TextBlock x:Name="ComName"
+                                               Text="{x:Bind NickName, Mode=OneWay}"
+                                                RelativePanel.AlignTopWithPanel="True"
+                                               RelativePanel.AlignLeftWithPanel="True"
+                                               FontSize="17"/>
+                                    <TextBlock x:Name="ComLocation"
+                                               Text="{x:Bind LocationName, Mode=OneWay}"
+                                               RelativePanel.RightOf="ComName"
+                                               RelativePanel.AlignBottomWith="ComName"
+                                               Foreground="Gray"
+                                               FontSize="12"
+                                               Margin="10, 0"/>
+                                    <TextBlock x:Name="TextContent"
+                                               Text="{x:Bind Content, Mode=OneWay}"
+                                               Margin="0, 10"
+                                               FontSize="14"
+                                               RelativePanel.AlignLeftWithPanel="True"
+                                               RelativePanel.Below="ComName"
+                                               TextWrapping="WrapWholeWords"/>
+                                </RelativePanel>
+
+                            </Grid>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </Grid>
+        </ScrollViewer>
+
+        <CommandBar
+            Background="{ThemeResource SystemControlAcrylicElementBrush}"
+            RelativePanel.AlignLeftWithPanel="True"
+            RelativePanel.AlignRightWithPanel="True"
+            DefaultLabelPosition="Right">
+            <!-- MovieDetailPage_AppBarAdd.Label="收藏" -->
+            <AppBarButton
+                x:Uid="MovieDetailPage_AppBarAdd"
+                x:Name="AppBarAdd"
+                Icon="Add"
+                AllowFocusOnInteraction="True">
+                <AppBarButton.Flyout>
+                    <Flyout x:Name="FlyoutAdd">
+                        <StackPanel>
+                            <!-- MovieDetailPage_AddCollectionText.Text="添加到我的收藏" -->
+                            <TextBlock
+                                x:Uid="MovieDetailPage_AddCollectionText"
+                                Style="{ThemeResource BaseTextBlockStyle}"
+                                Margin="12" />
+                            <!-- MovieDetailPage_NoteHeader.Header="备注：" 多次使用 -->
+                            <TextBox
+                                x:Uid="MovieDetailPage_NoteHeader"
+                                x:Name="TextNote"
+                                Margin="10"
+                                MinWidth="200" />
+                            <!-- MovieDetailPage_CollectButton.Content="收藏" -->
+                            <Button
+                                x:Uid="MovieDetailPage_CollectButton"
+                                HorizontalAlignment="Right"
+                                Click="Button_Click"/>
+                        </StackPanel>
+                    </Flyout>
+                </AppBarButton.Flyout>
+            </AppBarButton>
+            <!-- MovieDetailPage_AppBarEdit.Label="收藏" -->
+            <AppBarButton
+                x:Uid="MovieDetailPage_AppBarEdit"
+                x:Name="AppBarEdit"
+                Visibility="Collapsed"
+                Icon="SolidStar"
+                Click="AppBarEdit_Click"
+                AllowFocusOnInteraction="True">
+                <AppBarButton.Flyout>
+                    <Flyout x:Name="FlyoutEdit">
+                        <StackPanel>
+                            <!-- MovieDetailPage_CollectedText.Text="已收藏" -->
+                            <TextBlock
+                                x:Uid="MovieDetailPage_CollectedText"
+                                Style="{ThemeResource BaseTextBlockStyle}"
+                                Margin="12" />
+                            <!-- MovieDetailPage_NoteHeader.Header="备注：" 多次使用 -->
+                            <TextBox
+                                x:Uid="MovieDetailPage_NoteHeader"
+                                x:Name="TextNoteEdit"
+                                Margin="10"
+                                MinWidth="200" />
+                            <RelativePanel>
+                                <!-- MovieDetailPage_UncollectButton.Content="取消收藏" -->
+                                <Button
+                                    x:Uid="MovieDetailPage_UncollectButton"
+                                    RelativePanel.AlignLeftWithPanel="True"
+                                    Click="ButtonDelete_Click"/>
+                                <!-- MovieDetailPage_UpdateText.Content="修改" -->
+                                <Button
+                                    x:Uid="MovieDetailPage_UpdateText"
+                                    RelativePanel.AlignRightWithPanel="True"
+                                    Click="ButtonEdit_Click"/>
+                            </RelativePanel>
+                        </StackPanel>
+                    </Flyout>
+                </AppBarButton.Flyout>
+            </AppBarButton>
+            <!-- MovieDetailPage_AppBarShare.Label="分享" -->
+            <AppBarButton
+                x:Uid="MovieDetailPage_AppBarShare"
+                Icon="Share"
+                Command="{x:Bind ViewModel.ShareMovieCommand}"/>
+            <!-- MovieDetailPage_AppBarPurchase.Label="购票选座" -->
+            <AppBarButton
+                x:Uid="MovieDetailPage_AppBarPurchase"
+                Icon="CalendarWeek"
+                Visibility="{x:Bind ViewModel.MovieDetail.HasRating, Mode=OneWay}"
+                Command="{x:Bind ViewModel.OpenUri}"/>
+            <!-- MovieDetailPage_AppBarDetail.Label="查看详情" -->
+            <AppBarButton
+                x:Uid="MovieDetailPage_AppBarDetail"
+                Icon="Globe"
+                Visibility="{x:Bind ViewModel.MovieDetail.NotRating, Mode=OneWay}"
+                Command="{x:Bind ViewModel.OpenUri}"/>
+        </CommandBar>
+
+        <!-- MovieDetailPage_TextTitle.Text="影片详情" -->
+        <TextBlock
+            x:Uid="MovieDetailPage_TextTitle"
+            x:Name="TextTitle"
+            Margin="55, 10"
+            FontSize="21"/>
+    </RelativePanel>
+</Page>

@@ -1,0 +1,221 @@
+﻿<Page
+    x:Class="NEW_MOVIES.Views.MyCollectPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Style="{StaticResource PageStyle}"
+    DataContext="{Binding MyCollectViewModel, Source={StaticResource Locator}}"
+    mc:Ignorable="d"
+    xmlns:model="using:NEW_MOVIES.Models"
+    xmlns:ic="using:Microsoft.Xaml.Interactions.Core"
+    xmlns:i="using:Microsoft.Xaml.Interactivity">
+
+    <Page.Resources>
+        <Storyboard x:Name="GuessGridCloseStoryboard">
+            <DoubleAnimation
+                Storyboard.TargetName="GuessGrid"
+                Storyboard.TargetProperty="Height"
+                EnableDependentAnimation="True"
+                From="320" To="0" Duration="0:0:0.5">
+                <DoubleAnimation.EasingFunction>
+                    <CircleEase EasingMode="EaseInOut" />
+                </DoubleAnimation.EasingFunction>
+            </DoubleAnimation>
+        </Storyboard>
+        <Storyboard x:Name="GuessGridOpenStoryboard">
+            <DoubleAnimation
+                Storyboard.TargetName="GuessGrid"
+                Storyboard.TargetProperty="Height"
+                EnableDependentAnimation="True"
+                From="0" To="320" Duration="0:0:0.5">
+                <DoubleAnimation.EasingFunction>
+                    <CircleEase EasingMode="EaseInOut" />
+                </DoubleAnimation.EasingFunction>
+            </DoubleAnimation>
+        </Storyboard>
+    </Page.Resources>
+    <Grid
+        x:Name="ContentArea">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <!-- MyCollectPage_TextTitle.Text="我的收藏" -->
+        <TextBlock
+            x:Uid="MyCollectPage_TextTitle"
+            Grid.Row="0"
+            Margin="50, 10"
+            FontSize="22"/>
+        <ProgressBar
+                x:Name="LoadToOther"
+                IsIndeterminate="True"
+                Visibility="Collapsed"
+                VerticalAlignment="Top"
+                Grid.Row="0"
+                Margin="20, 10, 20 ,0"
+                Foreground="Blue"/>
+        <ListView
+            x:Name="CollectionsView"
+            ItemsSource="{x:Bind ViewModel.Collections, Mode=OneWay}"
+            Grid.Row="1"
+            CanDragItems="False"
+            Margin="10"
+            ItemClick="CollectionsView_ItemClick"
+            IsItemClickEnabled="True"
+            Padding="20">
+            <ListView.ItemContainerStyle>
+                <Style TargetType="ListViewItem">
+                    <Setter Property="HorizontalAlignment" Value="Stretch" />
+                    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                </Style>
+            </ListView.ItemContainerStyle>
+            <ListView.ItemTemplate>
+                <DataTemplate x:DataType="model:MovieItem">
+                    <RelativePanel Margin="10">
+                        <Image
+                            x:Name="ImageMovie"
+                            Height="180"
+                            RelativePanel.AlignLeftWithPanel="True"
+                            Source="{x:Bind ImageUri, Mode=OneWay}"/>
+                        <TextBlock
+                            x:Name="TextTitle"
+                            RelativePanel.RightOf="ImageMovie"
+                            FontSize="21"
+                            Text="{x:Bind TitleCn, Mode=OneWay}"
+                            Margin="20, 0, 0, 5"/>
+                        <TextBlock
+                            x:Name="TextDirectors"
+                            RelativePanel.RightOf="ImageMovie"
+                            RelativePanel.Below="TextTitle"
+                            Text="{x:Bind Directors, Mode=OneWay}"
+                            Margin="20, 5"/>
+                        <TextBlock
+                            x:Name="TextDate"
+                            RelativePanel.RightOf="ImageMovie"
+                            RelativePanel.Below="TextDirectors"
+                            Text="{x:Bind Date, Mode=OneWay}"
+                            Margin="20, 5"/>
+                        <TextBlock
+                            x:Name="TextType"
+                            RelativePanel.RightOf="ImageMovie"
+                            RelativePanel.Below="TextDate"
+                            Text="{x:Bind MovieType, Mode=OneWay}"
+                            Margin="15, 5"/>
+                        <!-- MyCollectPage_TextNoteHelp.Text="备注： " -->
+                        <TextBlock
+                            x:Uid="MyCollectPage_TextNoteHelp"
+                            x:Name="TextNoteHelp"
+                            RelativePanel.RightOf="ImageMovie"
+                            RelativePanel.Below="TextType"
+                            Margin="20, 5, 5, 0"/>
+                        <TextBlock
+                            x:Name="TextNote"
+                            RelativePanel.RightOf="TextNoteHelp"
+                            RelativePanel.Below="TextType"
+                            Text="{x:Bind Note, Mode=OneWay}"
+                            Margin="0, 5"/>
+                        <AppBarButton
+                            Icon="Delete"
+                            Click="DeleteButton_Click"
+                            RelativePanel.AlignRightWithPanel="True"/>
+                    </RelativePanel>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+        
+        <!-- MyCollectPage_TextTitle.GuessText="猜你喜欢" -->
+        <Grid x:Name="GuessGrid" Grid.Row="2" Margin="0,10,0,0" Height="320">
+            <Grid.RenderTransform>
+                <CompositeTransform/>
+            </Grid.RenderTransform>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <RelativePanel Grid.Row="0">
+                <TextBlock
+                    x:Uid="MyCollectPage_GuessTitle"
+                    x:Name="GuessTitle"
+                    Margin="50,8,0,0"
+                    FontSize="22"/>
+                <AppBarButton
+                    Width="48"
+                    Height="48"
+                    Margin="10,0,50,0"
+                    Click="AppBarButton_Click"
+                    RelativePanel.RightOf="GuessTitle"
+                    Icon="Cancel"/>
+            </RelativePanel>
+            <ProgressBar
+                x:Name="LoadGuessList"
+                IsIndeterminate="True"
+                Visibility="Collapsed"
+                VerticalAlignment="Top"
+                Grid.Row="1"
+                Margin="20, 10, 20 ,0"
+                Foreground="Blue"/>
+            <ListView
+                x:Name="GuessView"
+                Grid.Row="1"
+                CanDragItems="False"
+                Margin="10"
+                ItemClick="GuessView_ItemClick"
+                IsItemClickEnabled="True"
+                ScrollViewer.VerticalScrollBarVisibility="Disabled"  
+                ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                ScrollViewer.HorizontalScrollMode="Enabled"                  
+                ScrollViewer.VerticalScrollMode="Disabled"
+                Padding="20">
+                <ListView.ItemContainerStyle>
+                    <Style TargetType="ListViewItem">
+                        <Setter Property="HorizontalAlignment" Value="Stretch" />
+                        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                    </Style>
+                </ListView.ItemContainerStyle>
+                <ListView.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <StackPanel x:Name="ItemPanel" Orientation="Horizontal"></StackPanel>
+                    </ItemsPanelTemplate>
+                </ListView.ItemsPanel>
+                <ListView.ItemTemplate>
+                    <DataTemplate x:DataType="model:MovieItem">
+                        <RelativePanel Margin="10" Width="320">
+                            <Image
+                                x:Name="ImageMovie"
+                                Height="180"
+                                RelativePanel.AlignLeftWithPanel="True"
+                                Source="{x:Bind ImageUri, Mode=OneWay}"/>
+                            <TextBlock
+                                x:Name="TextTitle"
+                                RelativePanel.RightOf="ImageMovie"
+                                FontSize="21"
+                                Text="{x:Bind TitleCn, Mode=OneWay}"
+                                TextTrimming="CharacterEllipsis"
+                                Margin="20, 0, 0, 5"/>
+                            <TextBlock
+                                x:Name="TextDirectors"
+                                RelativePanel.RightOf="ImageMovie"
+                                RelativePanel.Below="TextTitle"
+                                Text="{x:Bind Directors, Mode=OneWay}"
+                                Margin="20, 5"/>
+                            <TextBlock
+                                x:Name="TextDate"
+                                RelativePanel.RightOf="ImageMovie"
+                                RelativePanel.Below="TextDirectors"
+                                Text="{x:Bind Date, Mode=OneWay}"
+                                Margin="20, 5"/>
+                            <TextBlock
+                                x:Name="TextType"
+                                RelativePanel.RightOf="ImageMovie"
+                                RelativePanel.Below="TextDate"
+                                Text="{x:Bind MovieType, Mode=OneWay}"
+                                Margin="20, 5"/>
+                        </RelativePanel>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </Grid>
+    </Grid>
+</Page>

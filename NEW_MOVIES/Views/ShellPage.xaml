@@ -1,0 +1,60 @@
+﻿<Page
+    x:Class="NEW_MOVIES.Views.ShellPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"    
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    DataContext="{Binding ShellViewModel, Source={StaticResource Locator}}"
+    xmlns:helpers="using:NEW_MOVIES.Helpers"
+    xmlns:ic="using:Microsoft.Xaml.Interactions.Core"
+    xmlns:i="using:Microsoft.Xaml.Interactivity"
+    mc:Ignorable="d">
+
+    <NavigationView
+        x:Name="navigationView"
+        Style="{StaticResource CustomNavigationMenuStyle}"
+        SelectedItem="{x:Bind ViewModel.Selected, Mode=OneWay}"
+        Header="{x:Bind ViewModel.Selected.Content, Mode=OneWay}"
+        IsSettingsVisible="True"
+        AlwaysShowHeader="False"
+        Background="{ThemeResource SystemControlAcrylicWindowBrush}">
+        <NavigationView.MenuItems>
+            <NavigationViewItem x:Uid="Shell_Main" Icon="Home" helpers:NavHelper.NavigateTo="NEW_MOVIES.ViewModels.HotMovieViewModel" />
+            <NavigationViewItem x:Uid="Shell_Blank" Icon="VideoChat" helpers:NavHelper.NavigateTo="NEW_MOVIES.ViewModels.ComingMovieViewModel" />
+            <NavigationViewItem x:Uid="Shell_MyCollect" Icon="OutlineStar" helpers:NavHelper.NavigateTo="NEW_MOVIES.ViewModels.MyCollectViewModel" />
+        </NavigationView.MenuItems>
+        <NavigationView.AutoSuggestBox>
+            <AutoSuggestBox
+                x:Name="NavASB"
+                QueryIcon="Find"
+                TextChanged="AutoSuggestBox_TextChanged"
+                QuerySubmitted="AutoSuggestBox_QuerySubmitted"/>
+        </NavigationView.AutoSuggestBox>
+        <NavigationView.HeaderTemplate>
+            <DataTemplate />
+            <!--<DataTemplate>
+                <TextBlock
+                    Style="{StaticResource TitleTextBlockStyle}"
+                    Margin="12,0,0,0"
+                    VerticalAlignment="Center"
+                    Text="{Binding}" />
+            </DataTemplate>-->
+        </NavigationView.HeaderTemplate>
+        <i:Interaction.Behaviors>
+            <ic:EventTriggerBehavior EventName="ItemInvoked">
+                <ic:InvokeCommandAction Command="{x:Bind ViewModel.ItemInvokedCommand}" />
+            </ic:EventTriggerBehavior>
+        </i:Interaction.Behaviors>
+        <Grid>
+            <Frame x:Name="shellFrame" />
+            <ProgressBar
+                x:Name="LoadToOther"
+                IsIndeterminate="True"
+                Visibility="Collapsed"
+                VerticalAlignment="Top"
+                Grid.Row="0"
+                Margin="20, 10, 20 ,0"
+                Foreground="Blue"/>
+        </Grid>
+    </NavigationView>
+</Page>
